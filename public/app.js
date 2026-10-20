@@ -190,7 +190,7 @@ function renderMe() {
 }
 
 // =====================================================
-// SOCKET.IO (Lógica de chats nuevos en tiempo real)
+// SOCKET.IO
 // =====================================================
 function connectSocket() {
   state.socket = io({ auth: { token: state.token }, transports: ['websocket', 'polling'] });
@@ -200,12 +200,8 @@ function connectSocket() {
   state.socket.on('user:online', ({ userId }) => { state.onlineUsers.add(userId); updatePresenceInUI(userId, true); });
   state.socket.on('user:offline', ({ userId }) => { state.onlineUsers.delete(userId); updatePresenceInUI(userId, false); });
 
-  // 🔥 NUEVO: Alguien nos envía un mensaje en un chat que NO tenemos abierto
   state.socket.on('chat:new-message', ({ chatId, message }) => {
-    // Refrescamos la lista de chats para que aparezca el nuevo chat mágicamente
     refreshChatsSilently();
-    
-    // Si no tenemos ese chat abierto, mostramos notificación
     if (!state.activeChat || String(state.activeChat._id) !== String(chatId)) {
       if (String(message.sender._id) !== String(state.user._id)) {
         toast(`💬 ${message.sender.displayName}: ${message.content.slice(0, 40)}`);
@@ -216,7 +212,6 @@ function connectSocket() {
 
   state.socket.on('message:new', (message) => {
     const msgChatId = message.chat?._id || message.chat;
-    const isMine = String(message.sender._id) === String(state.user._id);
     if (state.activeChat && String(state.activeChat._id) === String(msgChatId)) {
       state.messages.push(message); appendMessage(message); scrollToBottom();
       state.socket.emit('message:read', { chatId: msgChatId, messageIds: [message._id] });
@@ -224,8 +219,12 @@ function connectSocket() {
     refreshChatsSilently();
   });
 
+  // 🔥 FIX: Ocultar el "escribiendo..." si el chat no coincide
   state.socket.on('typing:start', ({ chatId, username }) => {
-    if (!state.activeChat || String(state.activeChat._id) !== String(chatId)) return;
+    if (!state.activeChat || String(state.activeChat._id) !== String(chatId)) {
+      $('#typing-indicator').classList.add('hidden'); // Asegura que no se muestre en otros chats
+      return;
+    }
     $('#typing-text').textContent = `${username} está escribiendo`;
     $('#typing-indicator').classList.remove('hidden');
   });
@@ -264,11 +263,7 @@ async function loadChats() {
 }
 
 async function refreshChatsSilently() {
-  try { 
-    const { chats } = await api('/api/chats'); 
-    state.chats = chats; 
-    renderChatList(); 
-  } catch {}
+  try { const { chats } = await api('/api/chats'); state.chats = chats; renderChatList(); } catch {}
 }
 
 function getOtherParticipant(chat) {
@@ -330,6 +325,10 @@ function renderChatList() {
 async function openChat(chatId) {
   const chat = state.chats.find((c) => String(c._id) === String(chatId));
   if (!chat) return;
+  
+  // 🔥 FIX: Ocultar el "escribiendo..." al cambiar de chat
+  $('#typing-indicator').classList.add('hidden');
+
   state.activeChat = chat; renderChatList(); renderChatView(chat);
   state.socket.emit('chat:join', { chatId });
 
@@ -557,6 +556,7 @@ $('#search-input')?.addEventListener('input', renderChatList);
 
 $('#btn-back')?.addEventListener('click', () => {
   $('#chat-panel').classList.remove('open'); state.activeChat = null; renderChatList();
+  $('#typing-indicator').classList.add('hidden'); // Ocultar typing al volver atrás
   $('#chat-view').classList.add('hidden'); $('#empty-state').classList.remove('hidden');
 });
 
