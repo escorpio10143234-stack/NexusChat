@@ -4,20 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NexusChat — Mensajería en tiempo real</title>
+  <!-- ⚠️ ESTA LÍNEA ES LA MÁS IMPORTANTE PARA LOS ESTILOS -->
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>" />
 </head>
 <body>
 
-  <!-- ============================================================= -->
-  <!-- PANTALLA DE AUTENTICACIÓN (Login / Registro)                  -->
-  <!-- ============================================================= -->
   <section id="auth-screen" class="auth-screen">
     <div class="auth-card">
       <div class="auth-logo">
         <span class="logo-icon">💬</span>
         <h1>NexusChat</h1>
-        <p class="tagline">Mensajería en tiempo real para amigos y familia</p>
+        <p class="tagline">Mensajería en tiempo real</p>
       </div>
 
       <div class="auth-tabs">
@@ -25,7 +23,6 @@
         <button id="tab-register" class="auth-tab" type="button">Registrarse</button>
       </div>
 
-      <!-- LOGIN -->
       <form id="login-form" class="auth-form" autocomplete="on">
         <label>
           <span>Usuario</span>
@@ -39,7 +36,6 @@
         <p class="auth-error" id="login-error"></p>
       </form>
 
-      <!-- REGISTRO -->
       <form id="register-form" class="auth-form hidden" autocomplete="on">
         <label>
           <span>Nombre para mostrar</span>
@@ -63,12 +59,7 @@
     </div>
   </section>
 
-  <!-- ============================================================= -->
-  <!-- PANTALLA PRINCIPAL (SPA)                                      -->
-  <!-- ============================================================= -->
   <main id="app-screen" class="app-screen hidden">
-
-    <!-- ============== PANEL IZQUIERDO ============== -->
     <aside class="sidebar" id="sidebar">
       <header class="sidebar-header">
         <div class="me">
@@ -93,9 +84,7 @@
       <div class="chat-list" id="chat-list"></div>
     </aside>
 
-    <!-- ============== PANEL DERECHO ============== -->
     <section class="chat-panel" id="chat-panel">
-
       <div class="empty-state" id="empty-state">
         <div class="empty-icon">💬</div>
         <h2>Selecciona un chat</h2>
@@ -124,48 +113,33 @@
 
         <form class="message-form" id="message-form">
           <button type="button" class="icon-btn" id="btn-emoji" title="Emoji">😊</button>
-          <input
-            type="text"
-            id="message-input"
-            placeholder="Escribe un mensaje..."
-            autocomplete="off"
-            maxlength="2000"
-          />
+          <input type="text" id="message-input" placeholder="Escribe un mensaje..." autocomplete="off" maxlength="2000" />
           <button type="submit" class="icon-btn send-btn" id="btn-send" title="Enviar">➤</button>
         </form>
       </div>
     </section>
   </main>
 
-  <!-- ============================================================= -->
-  <!-- MODAL: Nuevo chat                                             -->
-  <!-- ============================================================= -->
   <div class="modal hidden" id="modal-new-chat">
     <div class="modal-content">
       <header class="modal-header">
         <h3>Nuevo chat</h3>
         <button class="icon-btn" data-close-modal="modal-new-chat">✕</button>
       </header>
-
       <div class="modal-tabs">
         <button class="modal-tab active" id="newtab-1a1" type="button">1 a 1</button>
         <button class="modal-tab" id="newtab-group" type="button">Grupal</button>
       </div>
-
       <div class="search-box">
         <input type="text" id="user-search" placeholder="Buscar usuario por nombre o @usuario..." />
       </div>
-
       <div class="user-results" id="user-results">
         <p class="hint">Escribe para buscar usuarios registrados.</p>
       </div>
-
       <div class="group-name-box hidden" id="group-name-box">
         <input type="text" id="group-name" placeholder="Nombre del grupo" maxlength="80" />
       </div>
-
       <div class="selected-users" id="selected-users"></div>
-
       <footer class="modal-footer">
         <button class="btn-secondary" data-close-modal="modal-new-chat">Cancelar</button>
         <button class="btn-primary" id="btn-create-chat" disabled>Crear chat</button>
@@ -173,16 +147,12 @@
     </div>
   </div>
 
-  <!-- ============================================================= -->
-  <!-- MODAL: Mi perfil                                              -->
-  <!-- ============================================================= -->
   <div class="modal hidden" id="modal-profile">
     <div class="modal-content">
       <header class="modal-header">
         <h3>Mi perfil</h3>
         <button class="icon-btn" data-close-modal="modal-profile">✕</button>
       </header>
-
       <form id="profile-form" class="modal-body">
         <label>
           <span>Nombre para mostrar</span>
@@ -204,9 +174,6 @@
     </div>
   </div>
 
-  <!-- ============================================================= -->
-  <!-- TOAST (notificaciones)                                        -->
-  <!-- ============================================================= -->
   <div id="toast-container" class="toast-container"></div>
 
   <script src="/socket.io/socket.io.js"></script>

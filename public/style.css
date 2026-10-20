@@ -1,7 +1,6 @@
 /* =====================================================
    NexusChat - Estilos
    Modo oscuro, estilo WhatsApp/Telegram, responsive
-   Fix: input de mensajes siempre visible en móvil
    ===================================================== */
 
 /* ---------- Variables ---------- */
@@ -37,20 +36,22 @@
   box-sizing: border-box;
 }
 
-html,
-body {
-  height: 100%;
-  height: 100dvh;
+html, body {
+  min-height: 100%;
   background: var(--bg-0);
   color: var(--text-0);
-  overflow: hidden;
-  overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-button,
-input,
-textarea {
+/* Solo bloquea el scroll cuando la app está activa (logueado) */
+body.app-active {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+button, input, textarea {
   font: inherit;
   color: inherit;
 }
@@ -70,20 +71,23 @@ input {
 }
 
 /* =====================================================
-   PANTALLA DE AUTENTICACIÓN
+   PANTALLA DE AUTENTICACIÓN (SCROLL CORREGIDO)
    ===================================================== */
 .auth-screen {
-  min-height: 100vh;
-  min-height: 100dvh;
+  position: fixed;
+  inset: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 20px;
   background:
     radial-gradient(circle at 20% 20%, rgba(0, 168, 132, 0.15), transparent 40%),
     radial-gradient(circle at 80% 80%, rgba(0, 168, 132, 0.1), transparent 40%),
     var(--bg-0);
-  overflow-y: auto;
+  overflow-y: auto; /* Permite scroll con la rueda del ratón */
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .auth-card {
@@ -95,6 +99,7 @@ input {
   padding: 32px;
   box-shadow: var(--shadow);
   margin: auto;
+  flex-shrink: 0;
 }
 
 .auth-logo {
@@ -111,7 +116,6 @@ input {
 .auth-logo h1 {
   font-size: 26px;
   font-weight: 700;
-  letter-spacing: 0.5px;
   margin-bottom: 4px;
 }
 
@@ -165,7 +169,7 @@ input {
   background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  font-size: 16px; /* ⚠️ 16px evita zoom automático en iOS */
+  font-size: 16px;
   transition: border-color 0.2s;
 }
 
@@ -181,8 +185,7 @@ input {
 }
 
 /* ---------- Botones ---------- */
-.btn-primary,
-.btn-secondary {
+.btn-primary, .btn-secondary {
   padding: 12px 20px;
   border-radius: var(--radius-sm);
   font-weight: 600;
@@ -224,7 +227,6 @@ input {
   overflow: hidden;
 }
 
-/* ---------- Sidebar (izquierda) ---------- */
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -304,7 +306,6 @@ input {
   color: #fff;
 }
 
-/* ---------- Avatar ---------- */
 .avatar {
   width: 44px;
   height: 44px;
@@ -344,7 +345,6 @@ input {
   box-shadow: 0 0 0 2px rgba(49, 209, 88, 0.2);
 }
 
-/* ---------- Buscador ---------- */
 .search-box {
   padding: 8px 12px;
   background: var(--bg-1);
@@ -365,7 +365,6 @@ input {
   border-color: var(--accent);
 }
 
-/* ---------- Lista de chats ---------- */
 .chat-list {
   flex: 1;
   overflow-y: auto;
@@ -433,16 +432,10 @@ input {
   text-overflow: ellipsis;
 }
 
-/* =====================================================
-   PANEL DERECHO (chat) — CORREGIDO para móvil
-   ===================================================== */
 .chat-panel {
   display: flex;
   flex-direction: column;
   background: var(--bg-0);
-  background-image:
-    radial-gradient(circle at 25% 25%, rgba(0, 168, 132, 0.04), transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(0, 168, 132, 0.03), transparent 50%);
   position: relative;
   min-width: 0;
   height: 100vh;
@@ -450,7 +443,6 @@ input {
   overflow: hidden;
 }
 
-/* Estado vacío */
 .empty-state {
   flex: 1;
   display: flex;
@@ -479,7 +471,6 @@ input {
   max-width: 340px;
 }
 
-/* ---------- Vista del chat activo ---------- */
 .chat-view {
   display: flex;
   flex-direction: column;
@@ -530,7 +521,6 @@ input {
   display: none;
 }
 
-/* ---------- Área de mensajes ---------- */
 .messages {
   flex: 1;
   min-height: 0;
@@ -542,7 +532,6 @@ input {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Burbujas */
 .msg {
   max-width: 65%;
   padding: 8px 12px;
@@ -597,7 +586,6 @@ input {
   color: #53bdeb;
 }
 
-/* Separador de fecha */
 .date-sep {
   align-self: center;
   background: var(--bg-3);
@@ -609,7 +597,6 @@ input {
   text-transform: uppercase;
 }
 
-/* ---------- Indicador "escribiendo..." ---------- */
 .typing-indicator {
   display: flex;
   align-items: center;
@@ -642,7 +629,6 @@ input {
   30%           { transform: translateY(-4px); opacity: 1; }
 }
 
-/* ---------- Formulario de envío — CRÍTICO ---------- */
 .message-form {
   display: flex;
   align-items: center;
@@ -662,7 +648,7 @@ input {
   background: var(--bg-3);
   border: none;
   border-radius: 20px;
-  font-size: 16px; /* ⚠️ 16px evita zoom automático en iOS */
+  font-size: 16px;
   color: var(--text-0);
   min-width: 0;
 }
@@ -921,7 +907,7 @@ input {
 }
 
 /* =====================================================
-   SCROLLBARS
+   SCROLLBARS Y RESPONSIVE
    ===================================================== */
 ::-webkit-scrollbar {
   width: 8px;
@@ -941,9 +927,6 @@ input {
   background: var(--border);
 }
 
-/* =====================================================
-   RESPONSIVE (MÓVIL) — CORREGIDO
-   ===================================================== */
 @media (max-width: 768px) {
   .app-screen {
     grid-template-columns: 1fr;
@@ -997,18 +980,19 @@ input {
   .message-form {
     padding-bottom: max(10px, env(safe-area-inset-bottom));
   }
+
+  .auth-card {
+    padding: 24px 20px;
+  }
 }
 
-/* Pantallas muy pequeñas de altura (landscape móvil) */
 @media (max-height: 500px) {
   .auth-card {
     padding: 20px;
   }
-
   .auth-logo h1 {
     font-size: 20px;
   }
-
   .logo-icon {
     font-size: 32px;
   }
